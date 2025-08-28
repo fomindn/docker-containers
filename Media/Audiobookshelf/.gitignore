@@ -1,0 +1,8 @@
+# Do not add to index files in subfolders
+workdir/audiobooks/*
+workdir/config/*
+workdir/metadata/*
+workdir/podcasts/*
+
+# Always add to index .gitkeep files in any subfolders
+!workdir/**/.gitkeep
