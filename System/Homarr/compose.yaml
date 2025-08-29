@@ -1,0 +1,42 @@
+---
+version: "3.9"
+
+services:
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:latest
+    container_name: homarr
+    hostname: homarr
+    restart: unless-stopped
+    networks:
+      traefik-int:
+      mariadb-net:
+    volumes:
+      - ./workdir:/appdata:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Kyiv
+      - PUID=1027
+      - PGID=100
+      - LOG_LEVEL=info #debug / info / warn / error
+      #- DB_URL=mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - BASE_URL=https://${HOMARR_FQDN}
+      - NEXTAUTH_URL=https://${HOMARR_FQDN}
+      - AUTH_PROVIDERS=oidc,credentials
+      - AUTH_OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - AUTH_OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET}
+      - AUTH_OIDC_ISSUER=https://${AUTH_DOMAIN}/application/o/${OIDC_SLUG}/
+      - AUTH_OIDC_URI=https://${AUTH_DOMAIN}/application/o/authorize
+      - AUTH_OIDC_CLIENT_NAME=authentik
+      - AUTH_OIDC_SCOPE_OVERWRITE=openid email profile groups
+      - AUTH_OIDC_GROUPS_ATTRIBUTE=groups
+      - AUTH_LOGOUT_REDIRECT_URL=https://${AUTH_DOMAIN}/application/o/${OIDC_SLUG}/end-session/
+      - AUTH_OIDC_AUTO_LOGIN=false
+
+networks:
+  traefik-int:
+    external: true
+  mariadb-net:
+    external: true
