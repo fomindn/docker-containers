@@ -1,0 +1,34 @@
+---
+version: "3.9"
+
+services:
+  webtop:
+    image: linuxserver/webtop:debian-mate
+    container_name: webtop
+    hostname: webtop
+    restart: unless-stopped
+    mem_limit: 1024m
+    cpu_shares: 512
+    shm_size: "1gb"
+    security_opt:
+      - no-new-privileges:true
+      - seccomp:unconfined
+    networks:
+      traefik-int:
+    env_file:
+      - .env
+    environment:
+      TZ: Europe/Kyiv
+      CUSTOM_USER: ${USER_NAME}
+      PASSWORD: ${USER_PASS}
+      PUID: ${USER_ID}
+      PGID: ${GROUP_ID}
+      TITLE: Synology DS723+ - Webtop
+    volumes:
+      - ./workdir:/config:rw
+      - /volume1/homes/fomindn/Documents/Obsidian_vaults:/config/Obsidian_vaults:rw
+      - /etc/localtime:/etc/localtime:ro
+
+networks:
+  traefik-int:
+    external: true

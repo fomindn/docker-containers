@@ -1,0 +1,8 @@
+# Do not add to index .env file
+/.env
+
+# Do not add to index files in subfolders
+workdir/*
+
+# Always add to index .gitkeep files in any subfolders
+!workdir/**/.gitkeep
