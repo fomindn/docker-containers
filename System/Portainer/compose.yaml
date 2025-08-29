@@ -1,0 +1,24 @@
+version: "3.9"
+
+networks:
+  traefik-int:
+    external: true
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    hostname: portainer
+    restart: always
+    mem_limit: 512m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - traefik-int
+    environment:
+      - TZ=Europe/Kyiv
+    volumes:
+      - ./workdir:/data:rw
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /etc/localtime:/etc/localtime:ro
